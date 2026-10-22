@@ -1,0 +1,23 @@
+<div class="flex gap-2 mb-6">
+
+  <button
+    (click)="selectView('task')"
+    class="px-4 py-2 rounded-lg font-medium"
+    [class.bg-blue-500]="currentView === 'task'"
+    [class.text-white]="currentView === 'task'"
+    [class.bg-gray-200]="currentView !== 'task'"
+  >
+    Par tâche
+  </button>
+
+  <button
+    (click)="selectView('user')"
+    class="px-4 py-2 rounded-lg font-medium"
+    [class.bg-blue-500]="currentView === 'user'"
+    [class.text-white]="currentView === 'user'"
+    [class.bg-gray-200]="currentView !== 'user'"
+  >
+    Par user
+  </button>
+
+</div>

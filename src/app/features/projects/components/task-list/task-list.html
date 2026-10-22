@@ -1,0 +1,88 @@
+
+<div class="mt-5">
+
+  <h3 class="text-lg font-semibold mb-3">
+    Tâches
+  </h3>
+
+  <div class="space-y-3">
+
+    @for (task of tasks(); track task.id) {
+
+      <div
+        appHighlight="#fff3cd"
+        [appOverdue]="task.dueDate"
+        [taskStatus]="task.status"
+        class="p-3 border border-gray-200 rounded-lg border-l-4"
+        [ngClass]="{
+          'border-l-green-500': task.status === 'Terminé',
+          'border-l-yellow-500': task.status === 'En cours',
+          'border-l-gray-400': task.status === 'En attente'
+        }">
+
+        <!-- Titre et priorité -->
+        <div class="flex justify-between items-center">
+
+          <span
+            class="font-medium"
+            [appTooltip]="'Priorité : ' + task.priority + ' | Statut : ' + task.status">
+            {{ task.title }}
+          </span>
+
+          <span class="text-sm font-medium">
+            @switch (task.priority) {
+              @case ('Haute') {
+                ▲ Haute
+              }
+              @case ('Moyenne') {
+                ● Moyenne
+              }
+              @default {
+                ▼ Basse
+              }
+            }
+          </span>
+
+        </div>
+
+        <!-- Statut -->
+        <div class="text-sm text-gray-600 mt-1">
+          Statut : {{ task.status }}
+        </div>
+
+        <!-- Date d'échéance -->
+        @if (task.dueDate) {
+          <div class="text-sm text-gray-600 mt-1">
+            Échéance : {{ task.dueDate | date:'dd/MM/yyyy' }}
+
+            @if (task.status !== 'Terminé') {
+              · {{ task.dueDate | Deadline }}
+            }
+          </div>
+        } @else if (task.status !== 'Terminé') {
+          <div class="text-sm text-gray-600 mt-1">
+            {{ task.dueDate | Deadline }}
+          </div>
+        }
+
+        <!-- Description -->
+        @if (task.description) {
+          <p class="text-sm text-gray-600 mt-1">
+            {{ task.description | truncate:40 }}
+          </p>
+        }
+
+        <!-- Personne assignée -->
+        @if (showAssignee()) {
+          <div class="text-sm text-gray-600 mt-1">
+            Assigné à : {{ getAssigneeName(task) }}
+          </div>
+        }
+
+      </div>
+
+    }
+
+  </div>
+
+</div>

@@ -1,0 +1,97 @@
+
+<div class="bg-white rounded-xl shadow-md p-6 mb-6">
+
+  <!-- Informations utilisateur -->
+  <div class="flex justify-between items-start mb-4">
+
+    <div class="flex items-center gap-4">
+
+      <!-- Avatar avec initiales et couleur selon le rôle -->
+      <div
+        class="w-12 h-12 rounded-full text-white
+               flex items-center justify-center font-bold"
+        [ngStyle]="{ 'background-color': roleColor }">
+
+        {{ user().name | initials }}
+
+      </div>
+
+      <!-- Nom, email et rôle -->
+      <div>
+        <h2 class="text-xl font-bold">
+          {{ user().name | titlecase }}
+        </h2>
+
+        <p class="text-gray-600">
+          {{ user().email | lowercase }}
+        </p>
+
+        <p class="text-gray-600">
+          {{ user().role }}
+        </p>
+      </div>
+
+    </div>
+
+    <!-- Badge Actif / Inactif avec ngClass -->
+    <span
+      class="px-3 py-1 rounded-full"
+      [ngClass]="{
+        'bg-green-100 text-green-700': user().active,
+        'bg-red-100 text-red-700': !user().active
+      }">
+
+      {{ user().active ? 'Actif' : 'Inactif' }}
+
+    </span>
+
+  </div>
+
+  <!-- Compteurs -->
+  <div class="grid grid-cols-3 gap-4 mb-6">
+
+    <div class="bg-gray-100 rounded-lg p-4 text-center">
+      <p class="text-2xl font-bold">
+        {{ todoCount() }}
+      </p>
+      <p class="text-sm text-gray-600">À faire</p>
+    </div>
+
+    <div class="bg-gray-100 rounded-lg p-4 text-center">
+      <p class="text-2xl font-bold">
+        {{ inProgressCount() }}
+      </p>
+      <p class="text-sm text-gray-600">En cours</p>
+    </div>
+
+    <div class="bg-gray-100 rounded-lg p-4 text-center">
+      <p class="text-2xl font-bold">
+        {{ doneCount() }}
+      </p>
+      <p class="text-sm text-gray-600">Terminées</p>
+    </div>
+
+  </div>
+
+  <!-- Tâches assignées -->
+  <h3 class="text-lg font-semibold mb-4">
+    Tâches assignées
+  </h3>
+
+  @for (group of projectGroups(); track group.project.id) {
+
+    <app-user-project-group
+      [project]="group.project"
+      [tasks]="group.tasks"
+    />
+
+  } @empty {
+
+    <app-empty-state
+      title="Aucune tâche assignée"
+      message="Cet utilisateur n'a actuellement aucune tâche assignée."
+    />
+
+  }
+
+</div>

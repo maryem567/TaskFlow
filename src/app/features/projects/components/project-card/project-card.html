@@ -1,0 +1,97 @@
+
+<div class="bg-white rounded-xl shadow-md p-6 mb-6">
+
+  <!-- Nom du projet -->
+  <h2 class="text-2xl font-bold">
+    {{ project().name | uppercase }}
+  </h2>
+
+  <!-- Description -->
+  <p class="text-gray-600 mt-2">
+    {{ project().description }}
+  </p>
+
+  <!-- Informations du projet -->
+  <div class="grid grid-cols-2 gap-4 mt-4">
+
+    <!-- Date de début -->
+    <div>
+      <p class="text-sm text-gray-500">Date de début</p>
+      <p class="font-medium">
+        {{ project().startDate | date:'dd MMMM yyyy' }}
+      </p>
+    </div>
+
+    <!-- Budget -->
+    <div>
+      <p class="text-sm text-gray-500">Budget</p>
+      <p class="font-medium">
+        {{ project().budget | currency:'TND':'symbol':'1.2-2' }}
+      </p>
+    </div>
+
+    @if (project().tasks.length > 0) {
+
+      <!-- Avancement -->
+      <div>
+        <p class="text-sm text-gray-500">Avancement</p>
+
+        <p class="font-medium">
+          {{ completionRate() | percent:'1.0-0' }}
+        </p>
+
+        <!-- Barre d'avancement colorée -->
+        <div class="w-full bg-gray-200 rounded-full h-3 mt-2 overflow-hidden">
+          <div
+            class="h-3 rounded-full transition-all duration-300"
+            [ngStyle]="{
+              'width': (completionRate() * 100) + '%',
+              'background-color': barColor
+            }">
+          </div>
+        </div>
+      </div>
+
+      <!-- Coût moyen par tâche -->
+      <div>
+        <p class="text-sm text-gray-500">Coût moyen par tâche</p>
+        <p class="font-medium">
+          {{ averageCostPerTask() | number:'1.0-0' }}
+        </p>
+      </div>
+
+    }
+
+  </div>
+
+  <!-- Message d'avancement -->
+  @if (project().tasks.length === 0) {
+    <p class="mt-3">Aucune tâche pour le moment</p>
+  } @else if (completionRate() === 1) {
+    <p class="mt-3">Projet terminé</p>
+  } @else if (completionRate() > 0) {
+    <p class="mt-3">En progression</p>
+  } @else {
+    <p class="mt-3">Pas encore démarré</p>
+  }
+
+  <!-- Nombre de tâches par priorité -->
+  <div class="mt-5">
+    <h3 class="font-semibold mb-2">Tâches par priorité</h3>
+
+    @for (
+      item of taskCountByPriority() | keyvalue: priorityOrder;
+      track item.key
+    ) {
+      <p class="text-sm text-gray-600">
+        {{ item.key }} : {{ item.value }}
+      </p>
+    }
+  </div>
+
+  <!-- Les 3 premières tâches -->
+  <app-task-list
+    [tasks]="project().tasks | slice:0:3"
+  />
+
+</div>

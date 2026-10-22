@@ -1,0 +1,21 @@
+<div class="min-h-screen bg-gray-50 p-6">
+
+  <div class="max-w-5xl mx-auto">
+
+    <app-view-toggle
+      (viewChanged)="onViewChanged($event)"
+    />
+
+    @if (currentView() === 'task') {
+
+      <app-project-list />
+
+    } @else {
+
+      <app-user-list />
+
+    }
+
+  </div>
+
+</div>

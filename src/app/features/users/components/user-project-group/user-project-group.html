@@ -1,0 +1,20 @@
+<div class="border-t border-gray-200 pt-4 mt-4">
+
+  <div class="flex justify-between items-center mb-3">
+
+    <h4 class="font-semibold">
+      {{ project().name }}
+    </h4>
+
+    <span class="text-sm text-gray-500">
+      {{ tasks().length }} tâche(s)
+    </span>
+
+  </div>
+
+  <app-task-list
+  [tasks]="tasks() | slice:0:3"
+  [showAssignee]="false"
+/>
+
+</div>

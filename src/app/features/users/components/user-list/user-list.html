@@ -1,0 +1,34 @@
+<div class="min-h-screen bg-gray-50 p-6">
+
+  <div class="max-w-5xl mx-auto">
+
+    <h1 class="text-3xl font-bold mb-6">
+      Utilisateurs
+    </h1>
+
+    <input
+      type="text"
+      placeholder="Rechercher un utilisateur..."
+      (input)="onSearch($event)"
+      class="w-full p-3 border border-gray-300 rounded-lg mb-6"
+    />
+
+    @for (user of filteredUsers(); track user.id) {
+
+      <app-user-card
+        [user]="user"
+        [projects]="projects()"
+      />
+
+    } @empty {
+
+      <app-empty-state
+        title="Aucun utilisateur trouvé"
+        message="Aucun utilisateur ne correspond à votre recherche."
+      />
+
+    }
+
+  </div>
+
+</div>
