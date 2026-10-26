@@ -15,10 +15,11 @@
 
     @for (user of filteredUsers(); track user.id) {
 
-      <app-user-card
-        [user]="user"
-        [projects]="projects()"
-      />
+     <app-user-card
+       [user]="user"
+       [projects]="projects()"
+       (taskStatusChange)="onTaskStatusChange($event)"
+/>
 
     } @empty {
 

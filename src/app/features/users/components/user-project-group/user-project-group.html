@@ -13,8 +13,13 @@
   </div>
 
   <app-task-list
-  [tasks]="tasks() | slice:0:3"
-  [showAssignee]="false"
+    [tasks]="tasks() | slice:0:3"
+    [showAssignee]="false"
+    (taskStatusChange)="taskStatusChange.emit({
+      projectId: project().id,
+      taskId: $event.taskId,
+      newStatus: $event.newStatus
+  })"
 />
 
 </div>

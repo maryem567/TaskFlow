@@ -1,5 +1,5 @@
 
-import { Component, computed, input } from '@angular/core';
+import { Component, computed, input, output} from '@angular/core';
 import {
   LowerCasePipe,
   TitleCasePipe,
@@ -30,7 +30,11 @@ import { InitialsPipe } from '../../../../shared/pipes/initials-pipe';
 export class UserCard {
   user = input.required<User>();
   projects = input.required<Project[]>();
-
+  taskStatusChange = output<{
+    projectId: Project['id'];
+    taskId: Project['tasks'][number]['id'];
+    newStatus: Project['tasks'][number]['status'];
+}>();
   assignedTasks = computed(() =>
     this.projects()
       .flatMap(project => project.tasks)

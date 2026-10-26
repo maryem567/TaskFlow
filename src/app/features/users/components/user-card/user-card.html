@@ -81,9 +81,10 @@
   @for (group of projectGroups(); track group.project.id) {
 
     <app-user-project-group
-      [project]="group.project"
-      [tasks]="group.tasks"
-    />
+       [project]="group.project"
+       [tasks]="group.tasks"
+       (taskStatusChange)="taskStatusChange.emit($event)"
+/>
 
   } @empty {
 

@@ -1,4 +1,5 @@
-import { Component, input, output } from '@angular/core';
+
+import { Component, input, output, computed } from '@angular/core';
 import {
   UpperCasePipe,
   DatePipe,
@@ -11,10 +12,12 @@ import {
 } from '@angular/common';
 
 import { Project } from '../../models/project.model';
+import { Task } from '../../models/task.model';
 import { TaskList } from '../task-list/task-list';
 
 @Component({
   selector: 'app-project-card',
+  standalone: true,
   imports: [
     TaskList,
     UpperCasePipe,
@@ -23,7 +26,6 @@ import { TaskList } from '../task-list/task-list';
     PercentPipe,
     DecimalPipe,
     KeyValuePipe,
-    SlicePipe,
     NgStyle
   ],
   templateUrl: './project-card.html',
@@ -33,23 +35,44 @@ export class ProjectCard {
 
   project = input.required<Project>();
 
+  completedTaskCount = computed(() =>
+    this.project().tasks.filter(
+      task => task.status === 'Terminé'
+    ).length
+  );
+
   projectSelected = output<Project>();
+
+  taskStatusChange = output<{
+    projectId: number;
+    taskId: number;
+    newStatus: Task['status'];
+  }>();
 
   selectProject() {
     this.projectSelected.emit(this.project());
   }
 
-  completionRate(): number {
-    if (this.project().tasks.length === 0) {
+  onTaskStatusChange(event: {
+    taskId: number;
+    newStatus: Task['status'];
+  }): void {
+    this.taskStatusChange.emit({
+      projectId: this.project().id,
+      taskId: event.taskId,
+      newStatus: event.newStatus
+    });
+  }
+
+  completionRate = computed(() => {
+    const totalTasks = this.project().tasks.length;
+
+    if (totalTasks === 0) {
       return 0;
     }
 
-    const completedTasks = this.project().tasks.filter(
-      task => task.status === 'Terminé'
-    ).length;
-
-    return completedTasks / this.project().tasks.length;
-  }
+    return this.completedTaskCount() / totalTasks;
+  });
 
   averageCostPerTask(): number {
     if (this.project().tasks.length === 0) {
@@ -68,26 +91,31 @@ export class ProjectCard {
 
     return counts;
   }
-  priorityOrder = (a: { key: string; value: number }, b: { key: string; value: number }): number => {
-  const order: Record<string, number> = {
-    Haute: 1,
-    Moyenne: 2,
-    Basse: 3
+
+  priorityOrder = (
+    a: { key: string; value: number },
+    b: { key: string; value: number }
+  ): number => {
+    const order: Record<string, number> = {
+      Haute: 1,
+      Moyenne: 2,
+      Basse: 3
+    };
+
+    return order[a.key] - order[b.key];
   };
 
-  return order[a.key] - order[b.key];
-};
-get barColor(): string {
-  const rate = this.completionRate() * 100;
+  get barColor(): string {
+    const rate = this.completionRate() * 100;
 
-  if (rate < 34) {
-    return '#ef4444';
+    if (rate < 34) {
+      return '#ef4444';
+    }
+
+    if (rate <= 66) {
+      return '#f59e0b';
+    }
+
+    return '#22c55e';
   }
-
-  if (rate <= 66) {
-    return '#f59e0b';
-  }
-
-  return '#22c55e';
-}
 }

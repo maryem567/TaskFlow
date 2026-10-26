@@ -32,15 +32,19 @@
 
     @if (project().tasks.length > 0) {
 
-      <!-- Avancement -->
+      <!-- Tâches terminées et avancement -->
       <div>
-        <p class="text-sm text-gray-500">Avancement</p>
+        <p class="text-sm text-gray-500">Tâches terminées</p>
+        <p class="font-medium">
+          {{ completedTaskCount() }} / {{ project().tasks.length }}
+        </p>
 
+        <p class="text-sm text-gray-500 mt-2">Avancement</p>
         <p class="font-medium">
           {{ completionRate() | percent:'1.0-0' }}
         </p>
 
-        <!-- Barre d'avancement colorée -->
+        <!-- Barre d'avancement -->
         <div class="w-full bg-gray-200 rounded-full h-3 mt-2 overflow-hidden">
           <div
             class="h-3 rounded-full transition-all duration-300"
@@ -61,7 +65,6 @@
       </div>
 
     }
-
   </div>
 
   <!-- Message d'avancement -->
@@ -91,7 +94,8 @@
 
   <!-- Les 3 premières tâches -->
   <app-task-list
-    [tasks]="project().tasks | slice:0:3"
+    [tasks]="project().tasks"
+    (taskStatusChange)="onTaskStatusChange($event)"
   />
 
 </div>
