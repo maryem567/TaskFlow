@@ -1,5 +1,6 @@
 
 import { Component, computed, signal } from '@angular/core';
+
 import { Project } from '../../models/project.model';
 import { Task } from '../../models/task.model';
 import { ProjectService } from '../../../../core/services/project';
@@ -13,7 +14,6 @@ import { ProjectCard } from '../project-card/project-card';
   styleUrl: './project-list.css'
 })
 export class ProjectList {
-
   projects = signal<Project[]>([]);
   searchTerm = signal('');
 
@@ -31,7 +31,7 @@ export class ProjectList {
     });
   }
 
-  onSearch(event: Event) {
+  onSearch(event: Event): void {
     const input = event.target as HTMLInputElement;
     this.searchTerm.set(input.value);
   }
@@ -40,6 +40,7 @@ export class ProjectList {
     console.log(project);
   }
 
+  // Modifier le statut d'une tâche
   onTaskStatusChange(event: {
     projectId: number;
     taskId: number;
@@ -57,6 +58,27 @@ export class ProjectList {
             task.id === event.taskId
               ? { ...task, status: event.newStatus }
               : task
+          )
+        };
+      })
+    );
+  }
+
+  // Supprimer une tâche
+  onTaskDelete(event: {
+    projectId: number;
+    taskId: number;
+  }): void {
+    this.projects.update(projects =>
+      projects.map(project => {
+        if (project.id !== event.projectId) {
+          return project;
+        }
+
+        return {
+          ...project,
+          tasks: project.tasks.filter(
+            task => task.id !== event.taskId
           )
         };
       })

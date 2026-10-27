@@ -4,17 +4,52 @@
     Tâches
   </h3>
 
+  <!-- Filtres -->
+  <div class="flex flex-wrap gap-2 mb-4">
+    <button
+      type="button"
+      (click)="statusFilter.set('Toutes')"
+      [class.bg-blue-600]="statusFilter() === 'Toutes'"
+      [class.text-white]="statusFilter() === 'Toutes'"
+      class="px-3 py-2 rounded border"
+    >
+      Toutes
+    </button>
+
+    <button
+      type="button"
+      (click)="statusFilter.set('En cours')"
+      [class.bg-blue-600]="statusFilter() === 'En cours'"
+      [class.text-white]="statusFilter() === 'En cours'"
+      class="px-3 py-2 rounded border"
+    >
+      En cours
+    </button>
+
+    <button
+      type="button"
+      (click)="statusFilter.set('Terminées')"
+      [class.bg-blue-600]="statusFilter() === 'Terminées'"
+      [class.text-white]="statusFilter() === 'Terminées'"
+      class="px-3 py-2 rounded border"
+    >
+      Terminées
+    </button>
+  </div>
+
+  <!-- Liste filtrée -->
   <div class="space-y-3">
-    @for (task of tasks(); track task.id) {
+    @for (task of filteredTasks(); track task.id) {
       <app-task-item
         [task]="task"
         [showAssignee]="showAssignee()"
         [users]="users()"
         (taskStatusChange)="onTaskStatusChange(task.id, $event)"
-/>
+        (deleteTask)="onDeleteTask(task.id)"
+      />
     } @empty {
       <p class="text-gray-500 italic">
-        Aucune tâche
+        Aucune tâche pour ce filtre
       </p>
     }
   </div>

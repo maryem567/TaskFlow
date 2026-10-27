@@ -1,5 +1,5 @@
 
-import { Component, input, output, signal } from '@angular/core';
+import { Component, input, output, signal, computed } from '@angular/core';
 
 import { Task } from '../../models/task.model';
 import { User } from '../../../users/models/user.model';
@@ -19,10 +19,29 @@ export class TaskList {
 
   users = signal<User[]>([]);
 
+  // Filtre des tâches
+  statusFilter = signal<'Toutes' | 'En cours' | 'Terminées'>('Toutes');
+
+  filteredTasks = computed(() => {
+    const filter = this.statusFilter();
+
+    if (filter === 'Toutes') {
+      return this.tasks();
+    }
+
+    if (filter === 'En cours') {
+      return this.tasks().filter(task => task.status === 'En cours');
+    }
+
+    return this.tasks().filter(task => task.status === 'Terminé');
+  });
+
   taskStatusChange = output<{
     taskId: Task['id'];
     newStatus: Task['status'];
   }>();
+
+  taskDelete = output<number>();
 
   constructor(private userService: UserService) {
     this.userService.getUsers().subscribe(users => {
@@ -38,5 +57,9 @@ export class TaskList {
       taskId,
       newStatus
     });
+  }
+
+  onDeleteTask(taskId: number): void {
+    this.taskDelete.emit(taskId);
   }
 }

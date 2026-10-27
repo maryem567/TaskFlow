@@ -9,6 +9,7 @@ import { DeadlinePipe } from '../../../../shared/pipes/deadline-pipe';
 import { Highlight } from '../../../../shared/directives/highlight';
 import { Overdue } from '../../../../shared/directives/overdue';
 import { Tooltip } from '../../../../shared/directives/tooltip';
+import { TaskStatusBadge } from '../../../../shared/components/task-status-badge/task-status-badge';
 
 @Component({
   selector: 'app-task-item',
@@ -21,7 +22,8 @@ import { Tooltip } from '../../../../shared/directives/tooltip';
     DeadlinePipe,
     Highlight,
     Overdue,
-    Tooltip
+    Tooltip,
+    TaskStatusBadge
   ],
   templateUrl: './task-item.html',
   styleUrl: './task-item.css'
@@ -32,6 +34,11 @@ export class TaskItem {
   users = input<User[]>([]);
 
   taskStatusChange = output<Task['status']>();
+  deleteTask = output<number>();
+
+  onDeleteTask(): void {
+    this.deleteTask.emit(this.task().id);
+  }
 
   changeStatus(): void {
     const currentStatus = this.task().status;
@@ -56,7 +63,7 @@ export class TaskItem {
 
     return user?.name ?? 'Non assignée';
   }
-  
+
   isOverdue(): boolean {
     const dueDate = this.task().dueDate;
 
@@ -72,5 +79,4 @@ export class TaskItem {
 
     return deadline < today;
   }
-
 }

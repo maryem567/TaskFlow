@@ -1,0 +1,9 @@
+
+<span
+  class="badge"
+  [class.status-pending]="status() === 'En attente'"
+  [class.status-progress]="status() === 'En cours'"
+  [class.status-completed]="status() === 'Terminé'"
+>
+  {{ status() }}
+</span>

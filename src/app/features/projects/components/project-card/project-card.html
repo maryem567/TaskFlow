@@ -96,6 +96,6 @@
   <app-task-list
     [tasks]="project().tasks"
     (taskStatusChange)="onTaskStatusChange($event)"
-  />
-
+    (taskDelete)="onTaskDelete($event)"
+/>
 </div>
