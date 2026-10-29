@@ -1,5 +1,5 @@
 
-import { Component, computed, signal } from '@angular/core';
+import { Component, computed, signal, inject } from '@angular/core';
 
 import { Project } from '../../models/project.model';
 import { Task } from '../../models/task.model';
@@ -14,7 +14,11 @@ import { ProjectCard } from '../project-card/project-card';
   styleUrl: './project-list.css'
 })
 export class ProjectList {
-  projects = signal<Project[]>([]);
+  
+  private projectService = inject(ProjectService);
+  projects = this.projectService.projects;
+  isLoading = this.projectService.isLoading;
+  error = this.projectService.error;
   searchTerm = signal('');
 
   filteredProjects = computed(() => {
@@ -25,12 +29,21 @@ export class ProjectList {
     );
   });
 
-  constructor(private projectService: ProjectService) {
-    this.projectService.getProjects().subscribe(projects => {
-      this.projects.set(projects);
-    });
-  }
+constructor() {
+  console.log(
+    'ID ProjectService dans ProjectList :',
+    this.projectService.id
+  );
 
+  this.projectService.getProjects().subscribe({
+    next: (projects) => {
+      console.log('Projets reçus depuis le serveur :', projects);
+    },
+    error: (err) => {
+      console.error('Erreur lors du chargement des projets :', err);
+    }
+  });
+}
   onSearch(event: Event): void {
     const input = event.target as HTMLInputElement;
     this.searchTerm.set(input.value);
@@ -84,4 +97,8 @@ export class ProjectList {
       })
     );
   }
+  // Supprimer un projet
+onProjectDelete(projectId: number): void {
+  this.projectService.deleteProject(projectId);
+}
 }

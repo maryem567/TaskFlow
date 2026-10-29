@@ -42,6 +42,11 @@ export class ProjectCard {
   );
 
   projectSelected = output<Project>();
+  projectDelete = output<number>();
+
+onDeleteProject(): void {
+  this.projectDelete.emit(this.project().id);
+}
 
   taskStatusChange = output<{
     projectId: number;

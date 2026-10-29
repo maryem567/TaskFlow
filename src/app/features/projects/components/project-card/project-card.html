@@ -10,7 +10,13 @@
   <p class="text-gray-600 mt-2">
     {{ project().description }}
   </p>
-
+  <button
+  type="button"
+  (click)="onDeleteProject()"
+  class="mt-4 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
+>
+  Supprimer le projet
+</button>
   <!-- Informations du projet -->
   <div class="grid grid-cols-2 gap-4 mt-4">
 

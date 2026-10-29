@@ -1,5 +1,5 @@
 
-import { Component, computed, signal } from '@angular/core';
+import { Component, computed, signal, inject } from '@angular/core';
 
 import { User } from '../../models/user.model';
 import { UserService } from '../../../../core/services/user.service';
@@ -17,8 +17,15 @@ import { EmptyState } from '../../../../shared/components/empty-state/empty-stat
   styleUrl: './user-list.css'
 })
 export class UserList {
-  users = signal<User[]>([]);
-  projects = signal<Project[]>([]);
+  private projectService = inject(ProjectService);
+  private userService = inject(UserService);
+
+  users = this.userService.users;
+  projects = this.projectService.projects;
+
+  isLoading = this.userService.isLoading;
+  error = this.userService.error;
+
   searchTerm = signal('');
 
   filteredUsers = computed(() => {
@@ -29,17 +36,13 @@ export class UserList {
     );
   });
 
-  constructor(
-    private userService: UserService,
-    private projectService: ProjectService
-  ) {
-    this.userService.getUsers().subscribe(users => {
-      this.users.set(users);
-    });
+  constructor() {
+    console.log(
+      'ID ProjectService dans UserList :',
+      this.projectService.id
+    );
 
-    this.projectService.getProjects().subscribe(projects => {
-      this.projects.set(projects);
-    });
+    this.userService.getUsers().subscribe();
   }
 
   onSearch(event: Event): void {

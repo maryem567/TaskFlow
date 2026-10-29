@@ -1,3 +1,4 @@
+
 <div class="min-h-screen bg-gray-50 p-4 sm:p-6">
 
   <div class="max-w-5xl mx-auto">
@@ -13,6 +14,18 @@
       class="w-full p-3 border border-gray-300 rounded-lg mb-6 focus:outline-none focus:ring-2 focus:ring-blue-500"
     />
 
+    @if (isLoading()) {
+      <p class="text-center text-blue-600 mb-4">
+        Chargement des projets...
+      </p>
+    }
+
+    @if (error()) {
+      <p class="text-center text-red-600 mb-4">
+        {{ error() }}
+      </p>
+    }
+
     <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
 
       @for (project of filteredProjects(); track project.id) {
@@ -22,7 +35,8 @@
           (projectSelected)="onProjectSelected($event)"
           (taskStatusChange)="onTaskStatusChange($event)"
           (taskDelete)="onTaskDelete($event)"
-/>
+          (projectDelete)="onProjectDelete($event)"
+        />
 
       }
 
