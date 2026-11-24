@@ -1,7 +1,103 @@
-<div class="min-h-screen bg-gray-50 p-6">
+
+<div
+  class="min-h-screen bg-gray-50 dark:bg-gray-900 p-6 transition-colors duration-300"
+  [class.dark]="themeService.isDarkMode()"
+>
 
   <div class="max-w-5xl mx-auto">
 
+    <!-- En-tête de l'application -->
+    <div class="flex justify-between items-center mb-6">
+
+      <h1 class="text-2xl font-bold text-gray-800 dark:text-white">
+        TaskFlow
+      </h1>
+
+      <!-- Boutons Favoris et Thème -->
+      <div class="flex items-center gap-3">
+
+        <!-- Nombre de favoris -->
+        <div class="bg-yellow-100 text-yellow-700 px-4 py-2 rounded-lg font-semibold">
+          ★ Favoris ({{ favoritesService.count() }})
+        </div>
+
+        <!-- Bouton Changer le thème -->
+        <button
+          type="button"
+          (click)="themeService.toggleTheme()"
+          class="px-4 py-2 rounded-lg bg-gray-800 text-white hover:bg-gray-700"
+        >
+          {{ themeService.isDarkMode() ? '☀️ Mode clair' : '🌙 Mode sombre' }}
+        </button>
+
+
+      </div>
+
+    </div>
+
+    <!-- Zone des notifications -->
+    @if (notificationService.message()) {
+
+      <div
+        role="alert"
+        class="fixed top-5 right-5 z-[100] max-w-sm w-[calc(100%-2.5rem)] p-4 rounded-xl shadow-xl border flex items-center justify-between gap-4 transition-colors duration-300"
+
+        [class.bg-green-100]="notificationService.type() === 'success'"
+        [class.text-green-800]="notificationService.type() === 'success'"
+        [class.border-green-300]="notificationService.type() === 'success'"
+
+        [class.bg-red-100]="notificationService.type() === 'error'"
+        [class.text-red-800]="notificationService.type() === 'error'"
+        [class.border-red-300]="notificationService.type() === 'error'"
+
+        [class.bg-blue-100]="notificationService.type() === 'info'"
+        [class.text-blue-800]="notificationService.type() === 'info'"
+        [class.border-blue-300]="notificationService.type() === 'info'"
+
+        [class.dark:bg-green-950]="notificationService.type() === 'success'"
+        [class.dark:text-green-300]="notificationService.type() === 'success'"
+        [class.dark:border-green-800]="notificationService.type() === 'success'"
+
+        [class.dark:bg-red-950]="notificationService.type() === 'error'"
+        [class.dark:text-red-300]="notificationService.type() === 'error'"
+        [class.dark:border-red-800]="notificationService.type() === 'error'"
+
+        [class.dark:bg-blue-950]="notificationService.type() === 'info'"
+        [class.dark:text-blue-300]="notificationService.type() === 'info'"
+        [class.dark:border-blue-800]="notificationService.type() === 'info'"
+      >
+
+        <div class="flex items-center gap-2">
+
+          @if (notificationService.type() === 'success') {
+            <span class="text-xl">✅</span>
+          } @else if (notificationService.type() === 'error') {
+            <span class="text-xl">❌</span>
+          } @else {
+            <span class="text-xl">ℹ️</span>
+          }
+
+          <p class="font-medium">
+            {{ notificationService.message() }}
+          </p>
+
+        </div>
+
+        <!-- Fermer la notification -->
+        <button
+          type="button"
+          (click)="notificationService.clear()"
+          class="font-bold text-xl hover:opacity-60"
+          aria-label="Fermer la notification"
+        >
+          ×
+        </button>
+
+      </div>
+
+    }
+
+    <!-- Changement de vue -->
     <app-view-toggle
       (viewChanged)="onViewChanged($event)"
     />

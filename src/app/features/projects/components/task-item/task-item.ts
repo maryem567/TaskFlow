@@ -1,5 +1,5 @@
 
-import { Component, input, output } from '@angular/core';
+import { Component, input, output, signal } from '@angular/core';
 import { DatePipe, NgClass, NgStyle } from '@angular/common';
 
 import { User } from '../../../users/models/user.model';
@@ -29,6 +29,7 @@ import { TaskStatusBadge } from '../../../../shared/components/task-status-badge
   styleUrl: './task-item.css'
 })
 export class TaskItem {
+
   task = input.required<Task>();
   showAssignee = input(true);
   users = input<User[]>([]);
@@ -36,8 +37,23 @@ export class TaskItem {
   taskStatusChange = output<Task['status']>();
   deleteTask = output<number>();
 
+  // Contrôle de la fenêtre de confirmation
+  showDeleteConfirmation = signal(false);
+
+  // Ouvrir la fenêtre de confirmation
   onDeleteTask(): void {
+    this.showDeleteConfirmation.set(true);
+  }
+
+  // Annuler la suppression
+  cancelDelete(): void {
+    this.showDeleteConfirmation.set(false);
+  }
+
+  // Confirmer la suppression
+  confirmDelete(): void {
     this.deleteTask.emit(this.task().id);
+    this.showDeleteConfirmation.set(false);
   }
 
   changeStatus(): void {

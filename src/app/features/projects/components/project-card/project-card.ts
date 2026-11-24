@@ -1,5 +1,6 @@
 
-import { Component, input, output, computed } from '@angular/core';
+import { Component, input, output, computed, inject, signal } from '@angular/core';
+import { FavoritesService } from '../../../../core/services/favorites.service';
 import {
   UpperCasePipe,
   DatePipe,
@@ -35,6 +36,9 @@ export class ProjectCard {
 
   project = input.required<Project>();
 
+  // Afficher ou cacher la fenêtre de confirmation
+  showDeleteConfirmation = signal(false);
+
   completedTaskCount = computed(() =>
     this.project().tasks.filter(
       task => task.status === 'Terminé'
@@ -44,27 +48,41 @@ export class ProjectCard {
   projectSelected = output<Project>();
   projectDelete = output<number>();
 
-onDeleteProject(): void {
-  this.projectDelete.emit(this.project().id);
-}
+  // Ouvrir la fenêtre de confirmation
+  onDeleteProject(): void {
+    this.showDeleteConfirmation.set(true);
+  }
+
+  // Annuler la suppression
+  cancelDelete(): void {
+    this.showDeleteConfirmation.set(false);
+  }
+
+  // Confirmer la suppression
+  confirmDelete(): void {
+    this.projectDelete.emit(this.project().id);
+    this.showDeleteConfirmation.set(false);
+  }
 
   taskStatusChange = output<{
     projectId: number;
     taskId: number;
     newStatus: Task['status'];
   }>();
+
   taskDelete = output<{
     projectId: number;
     taskId: number;
-}>();
+  }>();
+
   onTaskDelete(taskId: number): void {
     this.taskDelete.emit({
       projectId: this.project().id,
       taskId: taskId
-  });
-}
+    });
+  }
 
-  selectProject() {
+  selectProject(): void {
     this.projectSelected.emit(this.project());
   }
 
@@ -105,6 +123,16 @@ onDeleteProject(): void {
     }
 
     return counts;
+  }
+
+  favoritesService = inject(FavoritesService);
+
+  isFavorite(): boolean {
+    return this.favoritesService.isFavorite(this.project().id);
+  }
+
+  toggleFavorite(): void {
+    this.favoritesService.toggle(this.project().id);
   }
 
   priorityOrder = (

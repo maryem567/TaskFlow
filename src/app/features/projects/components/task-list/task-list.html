@@ -1,17 +1,19 @@
 
 <div class="mt-5">
-  <h3 class="text-lg font-semibold mb-3">
+
+  <h3 class="text-lg font-semibold mb-3 text-gray-800 dark:text-white">
     Tâches
   </h3>
 
   <!-- Filtres -->
   <div class="flex flex-wrap gap-2 mb-4">
+
     <button
       type="button"
       (click)="statusFilter.set('Toutes')"
       [class.bg-blue-600]="statusFilter() === 'Toutes'"
       [class.text-white]="statusFilter() === 'Toutes'"
-      class="px-3 py-2 rounded border"
+      class="px-3 py-2 rounded border border-gray-300 dark:border-gray-600 dark:text-gray-200"
     >
       Toutes
     </button>
@@ -21,7 +23,7 @@
       (click)="statusFilter.set('En cours')"
       [class.bg-blue-600]="statusFilter() === 'En cours'"
       [class.text-white]="statusFilter() === 'En cours'"
-      class="px-3 py-2 rounded border"
+      class="px-3 py-2 rounded border border-gray-300 dark:border-gray-600 dark:text-gray-200"
     >
       En cours
     </button>
@@ -31,15 +33,18 @@
       (click)="statusFilter.set('Terminées')"
       [class.bg-blue-600]="statusFilter() === 'Terminées'"
       [class.text-white]="statusFilter() === 'Terminées'"
-      class="px-3 py-2 rounded border"
+      class="px-3 py-2 rounded border border-gray-300 dark:border-gray-600 dark:text-gray-200"
     >
       Terminées
     </button>
+
   </div>
 
   <!-- Liste filtrée -->
   <div class="space-y-3">
+
     @for (task of filteredTasks(); track task.id) {
+
       <app-task-item
         [task]="task"
         [showAssignee]="showAssignee()"
@@ -47,10 +52,15 @@
         (taskStatusChange)="onTaskStatusChange(task.id, $event)"
         (deleteTask)="onDeleteTask(task.id)"
       />
+
     } @empty {
-      <p class="text-gray-500 italic">
+
+      <p class="text-gray-500 dark:text-gray-300 italic">
         Aucune tâche pour ce filtre
       </p>
+
     }
+
   </div>
+
 </div>

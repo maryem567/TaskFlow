@@ -1,6 +1,9 @@
 
 import { Component, computed, signal, inject } from '@angular/core';
 
+import { RecentProjectsService } from '../../../../core/services/recent-projects.service';
+import { NotificationService } from '../../../../core/services/notification.service';
+
 import { Project } from '../../models/project.model';
 import { Task } from '../../models/task.model';
 import { ProjectService } from '../../../../core/services/project';
@@ -17,8 +20,11 @@ import { ProjectForm } from '../project-form/project-form';
 export class ProjectList {
 
   private projectService = inject(ProjectService);
+  private recentProjectsService = inject(RecentProjectsService);
+  private notificationService = inject(NotificationService);
 
   projects = this.projectService.projects;
+  recentProjects = this.recentProjectsService.recentProjects;
   isLoading = this.projectService.isLoading;
   error = this.projectService.error;
 
@@ -46,9 +52,18 @@ export class ProjectList {
     this.projectService.getProjects().subscribe({
       next: (projects) => {
         console.log('Projets reçus depuis le serveur :', projects);
+
+        if (this.error()) {
+          this.notificationService.showError(
+            'Erreur lors du chargement des projets !'
+          );
+        }
       },
       error: (err) => {
         console.error('Erreur lors du chargement des projets :', err);
+        this.notificationService.showError(
+          'Impossible de charger les projets !'
+        );
       }
     });
   }
@@ -77,11 +92,19 @@ export class ProjectList {
         next: (updatedProject) => {
           console.log('Projet modifié avec succès :', updatedProject);
 
+          this.notificationService.showSuccess(
+            'Projet modifié avec succès !'
+          );
+
           this.selectedProject.set(null);
           this.showProjectForm.set(false);
         },
         error: (err) => {
           console.error('Erreur lors de la modification :', err);
+
+          this.notificationService.showError(
+            'Erreur lors de la modification du projet !'
+          );
         }
       });
 
@@ -92,10 +115,18 @@ export class ProjectList {
         next: (newProject) => {
           console.log('Projet ajouté avec succès :', newProject);
 
+          this.notificationService.showSuccess(
+            'Projet ajouté avec succès !'
+          );
+
           this.showProjectForm.set(false);
         },
         error: (err) => {
-          console.error('Erreur lors de l’ajout du projet :', err);
+          console.error('Erreur lors de l’ajout :', err);
+
+          this.notificationService.showError(
+            'Erreur lors de l’ajout du projet !'
+          );
         }
       });
     }
@@ -103,6 +134,11 @@ export class ProjectList {
 
   // Sélectionner un projet à modifier
   onProjectSelected(project: Project): void {
+
+    // Ajouter le projet aux derniers projets consultés
+    this.recentProjectsService.addRecent(project);
+
+    // Ouvrir le formulaire de modification
     this.selectedProject.set(project);
     this.showProjectForm.set(true);
   }
@@ -150,10 +186,28 @@ export class ProjectList {
         };
       })
     );
+
+    this.notificationService.showSuccess(
+      'Tâche supprimée avec succès !'
+    );
   }
 
   // Supprimer un projet
-  onProjectDelete(projectId: number): void {
-    this.projectService.deleteProject(projectId);
-  }
+onProjectDelete(projectId: number): void {
+  this.projectService.deleteProject(projectId).subscribe({
+    next: () => {
+      this.notificationService.showSuccess(
+        'Projet supprimé avec succès !'
+      );
+    },
+    error: (err) => {
+      console.error('Erreur lors de la suppression :', err);
+
+      this.notificationService.showError(
+        'Erreur lors de la suppression du projet !'
+      );
+    }
+  });
+}
+
 }

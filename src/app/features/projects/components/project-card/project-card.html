@@ -1,18 +1,18 @@
 
-<div class="bg-white rounded-xl shadow-md p-6 mb-6">
+<div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 mb-6 transition-colors duration-300">
 
   <!-- Nom du projet -->
-  <h2 class="text-2xl font-bold">
+  <h2 class="text-2xl font-bold text-gray-800 dark:text-white">
     {{ project().name | uppercase }}
   </h2>
 
   <!-- Description -->
-  <p class="text-gray-600 mt-2">
+  <p class="text-gray-600 dark:text-gray-300 mt-2">
     {{ project().description }}
   </p>
 
-  <!-- Boutons Modifier et Supprimer -->
-  <div class="flex gap-2 mt-4">
+  <!-- Boutons Modifier, Supprimer et Favoris -->
+  <div class="flex flex-wrap gap-2 mt-4">
 
     <button
       type="button"
@@ -30,6 +30,16 @@
       Supprimer le projet
     </button>
 
+    <!-- Bouton Favoris -->
+    <button
+      type="button"
+      (click)="toggleFavorite()"
+      class="px-4 py-2 rounded-lg border border-yellow-500 text-yellow-600 hover:bg-yellow-50 dark:hover:bg-gray-700"
+      [attr.aria-label]="isFavorite() ? 'Retirer des favoris' : 'Ajouter aux favoris'"
+    >
+      {{ isFavorite() ? '★' : '☆' }}
+    </button>
+
   </div>
 
   <!-- Informations du projet -->
@@ -37,16 +47,20 @@
 
     <!-- Date de début -->
     <div>
-      <p class="text-sm text-gray-500">Date de début</p>
-      <p class="font-medium">
+      <p class="text-sm text-gray-500 dark:text-gray-400">
+        Date de début
+      </p>
+      <p class="font-medium text-gray-900 dark:text-white">
         {{ project().startDate | date:'dd MMMM yyyy' }}
       </p>
     </div>
 
     <!-- Budget -->
     <div>
-      <p class="text-sm text-gray-500">Budget</p>
-      <p class="font-medium">
+      <p class="text-sm text-gray-500 dark:text-gray-400">
+        Budget
+      </p>
+      <p class="font-medium text-gray-900 dark:text-white">
         {{ project().budget | currency:'TND':'symbol':'1.2-2' }}
       </p>
     </div>
@@ -55,18 +69,25 @@
 
       <!-- Tâches terminées et avancement -->
       <div>
-        <p class="text-sm text-gray-500">Tâches terminées</p>
-        <p class="font-medium">
+
+        <p class="text-sm text-gray-500 dark:text-gray-400">
+          Tâches terminées
+        </p>
+
+        <p class="font-medium text-gray-900 dark:text-white">
           {{ completedTaskCount() }} / {{ project().tasks.length }}
         </p>
 
-        <p class="text-sm text-gray-500 mt-2">Avancement</p>
-        <p class="font-medium">
+        <p class="text-sm text-gray-500 dark:text-gray-400 mt-2">
+          Avancement
+        </p>
+
+        <p class="font-medium text-gray-900 dark:text-white">
           {{ completionRate() | percent:'1.0-0' }}
         </p>
 
         <!-- Barre d'avancement -->
-        <div class="w-full bg-gray-200 rounded-full h-3 mt-2 overflow-hidden">
+        <div class="w-full bg-gray-200 dark:bg-gray-600 rounded-full h-3 mt-2 overflow-hidden">
           <div
             class="h-3 rounded-full transition-all duration-300"
             [ngStyle]="{
@@ -75,42 +96,71 @@
             }">
           </div>
         </div>
+
       </div>
 
       <!-- Coût moyen par tâche -->
       <div>
-        <p class="text-sm text-gray-500">Coût moyen par tâche</p>
-        <p class="font-medium">
+
+        <p class="text-sm text-gray-500 dark:text-gray-400">
+          Coût moyen par tâche
+        </p>
+
+        <p class="font-medium text-gray-900 dark:text-white">
           {{ averageCostPerTask() | number:'1.0-0' }}
         </p>
+
       </div>
 
     }
+
   </div>
 
   <!-- Message d'avancement -->
   @if (project().tasks.length === 0) {
-    <p class="mt-3">Aucune tâche pour le moment</p>
+
+    <p class="mt-3 text-gray-700 dark:text-gray-200">
+      Aucune tâche pour le moment
+    </p>
+
   } @else if (completionRate() === 1) {
-    <p class="mt-3">Projet terminé</p>
+
+    <p class="mt-3 text-green-700 dark:text-green-400">
+      Projet terminé
+    </p>
+
   } @else if (completionRate() > 0) {
-    <p class="mt-3">En progression</p>
+
+    <p class="mt-3 text-blue-700 dark:text-blue-400">
+      En progression
+    </p>
+
   } @else {
-    <p class="mt-3">Pas encore démarré</p>
+
+    <p class="mt-3 text-gray-700 dark:text-gray-200">
+      Pas encore démarré
+    </p>
+
   }
 
   <!-- Nombre de tâches par priorité -->
   <div class="mt-5">
-    <h3 class="font-semibold mb-2">Tâches par priorité</h3>
+
+    <h3 class="font-semibold mb-2 text-gray-800 dark:text-white">
+      Tâches par priorité
+    </h3>
 
     @for (
       item of taskCountByPriority() | keyvalue: priorityOrder;
       track item.key
     ) {
-      <p class="text-sm text-gray-600">
+
+      <p class="text-sm text-gray-600 dark:text-gray-300">
         {{ item.key }} : {{ item.value }}
       </p>
+
     }
+
   </div>
 
   <!-- Liste des tâches -->
@@ -121,3 +171,51 @@
   />
 
 </div>
+
+<!-- Fenêtre personnalisée de confirmation de suppression -->
+@if (showDeleteConfirmation()) {
+
+  <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+
+    <div class="w-full max-w-md rounded-xl bg-white dark:bg-gray-800 p-6 shadow-2xl transition-colors duration-300">
+
+      <!-- Titre -->
+      <h2 class="text-xl font-bold text-gray-800 dark:text-white mb-3">
+        ⚠️ Confirmer la suppression
+      </h2>
+
+      <!-- Message -->
+      <p class="text-gray-600 dark:text-gray-300 mb-6">
+        Voulez-vous vraiment supprimer le projet
+        <strong class="text-gray-900 dark:text-white">
+          {{ project().name }}
+        </strong>
+        ? Cette action est irréversible.
+      </p>
+
+      <!-- Boutons -->
+      <div class="flex flex-wrap justify-end gap-3">
+
+        <button
+          type="button"
+          (click)="cancelDelete()"
+          class="px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition"
+        >
+          Annuler
+        </button>
+
+        <button
+          type="button"
+          (click)="confirmDelete()"
+          class="px-4 py-2 rounded-lg bg-red-600 text-white hover:bg-red-700 transition"
+        >
+          Confirmer la suppression
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+}

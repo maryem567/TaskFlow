@@ -1,8 +1,8 @@
 
-<div class="max-w-2xl mx-auto bg-white p-6 rounded-xl shadow-md">
+<div class="max-w-2xl mx-auto bg-white dark:bg-gray-800 text-gray-800 dark:text-white p-6 rounded-xl shadow-md transition-colors duration-300">
 
   <!-- Titre dynamique -->
-  <h2 class="text-2xl font-bold mb-6">
+  <h2 class="text-2xl font-bold mb-6 text-gray-800 dark:text-white">
     {{ projectToEdit() ? 'Modifier un projet' : 'Ajouter un projet' }}
   </h2>
 
@@ -11,13 +11,13 @@
     <!-- Groupe des informations générales -->
     <div ngModelGroup="general" #general="ngModelGroup">
 
-      <h3 class="text-lg font-semibold mb-4 text-blue-700">
+      <h3 class="text-lg font-semibold mb-4 text-blue-700 dark:text-blue-400">
         Informations générales
       </h3>
 
       <!-- Nom du projet -->
       <div class="mb-4">
-        <label class="block font-medium mb-2">
+        <label class="block font-medium mb-2 text-gray-700 dark:text-gray-200">
           Nom du projet
         </label>
 
@@ -28,7 +28,7 @@
           required
           minlength="3"
           #name="ngModel"
-          class="w-full p-3 border rounded-lg"
+          class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-800 dark:text-white placeholder-gray-400 dark:placeholder-gray-300"
           placeholder="Entrez le nom du projet"
         />
 
@@ -49,7 +49,7 @@
 
       <!-- Description -->
       <div class="mb-4">
-        <label class="block font-medium mb-2">
+        <label class="block font-medium mb-2 text-gray-700 dark:text-gray-200">
           Description
         </label>
 
@@ -59,7 +59,7 @@
           required
           minlength="10"
           #description="ngModel"
-          class="w-full p-3 border rounded-lg"
+          class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-800 dark:text-white placeholder-gray-400 dark:placeholder-gray-300"
           placeholder="Décrivez votre projet"
         ></textarea>
 
@@ -80,7 +80,7 @@
 
       <!-- Statut -->
       <div class="mb-4">
-        <label class="block font-medium mb-2">
+        <label class="block font-medium mb-2 text-gray-700 dark:text-gray-200">
           Statut
         </label>
 
@@ -89,7 +89,7 @@
           [(ngModel)]="project.status"
           required
           #status="ngModel"
-          class="w-full p-3 border rounded-lg"
+          class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-800 dark:text-white"
         >
           <option value="" disabled>Choisir un statut</option>
 
@@ -107,7 +107,7 @@
 
       <!-- Date de début -->
       <div class="mb-6">
-        <label class="block font-medium mb-2">
+        <label class="block font-medium mb-2 text-gray-700 dark:text-gray-200">
           Date de début
         </label>
 
@@ -117,7 +117,7 @@
           [(ngModel)]="project.startDate"
           required
           #startDate="ngModel"
-          class="w-full p-3 border rounded-lg"
+          class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-800 dark:text-white"
         />
 
         @if (startDate.invalid && (startDate.touched || startDate.dirty)) {
@@ -133,7 +133,7 @@
           Les informations générales contiennent des erreurs.
         </p>
       } @else if (general.valid && (general.touched || general.dirty)) {
-        <p class="text-green-600 text-sm mb-4">
+        <p class="text-green-600 dark:text-green-400 text-sm mb-4">
           Les informations générales sont valides.
         </p>
       }
@@ -143,13 +143,13 @@
     <!-- Groupe des informations financières -->
     <div ngModelGroup="financial" #financial="ngModelGroup">
 
-      <h3 class="text-lg font-semibold mb-4 text-blue-700">
+      <h3 class="text-lg font-semibold mb-4 text-blue-700 dark:text-blue-400">
         Informations financières
       </h3>
 
       <!-- Budget -->
       <div class="mb-6">
-        <label class="block font-medium mb-2">
+        <label class="block font-medium mb-2 text-gray-700 dark:text-gray-200">
           Budget
         </label>
 
@@ -160,7 +160,7 @@
           required
           min="0.01"
           #budget="ngModel"
-          class="w-full p-3 border rounded-lg"
+          class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-800 dark:text-white placeholder-gray-400 dark:placeholder-gray-300"
           placeholder="Entrez le budget"
         />
 
@@ -185,7 +185,7 @@
           Les informations financières contiennent des erreurs.
         </p>
       } @else if (financial.valid && (financial.touched || financial.dirty)) {
-        <p class="text-green-600 text-sm mb-4">
+        <p class="text-green-600 dark:text-green-400 text-sm mb-4">
           Les informations financières sont valides.
         </p>
       }
