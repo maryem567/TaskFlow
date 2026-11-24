@@ -1,0 +1,218 @@
+
+<div class="max-w-2xl mx-auto bg-white p-6 rounded-xl shadow-md">
+
+  <!-- Titre dynamique -->
+  <h2 class="text-2xl font-bold mb-6">
+    {{ projectToEdit() ? 'Modifier un projet' : 'Ajouter un projet' }}
+  </h2>
+
+  <form #projectForm="ngForm" (ngSubmit)="onSubmit(projectForm)">
+
+    <!-- Groupe des informations générales -->
+    <div ngModelGroup="general" #general="ngModelGroup">
+
+      <h3 class="text-lg font-semibold mb-4 text-blue-700">
+        Informations générales
+      </h3>
+
+      <!-- Nom du projet -->
+      <div class="mb-4">
+        <label class="block font-medium mb-2">
+          Nom du projet
+        </label>
+
+        <input
+          type="text"
+          name="name"
+          [(ngModel)]="project.name"
+          required
+          minlength="3"
+          #name="ngModel"
+          class="w-full p-3 border rounded-lg"
+          placeholder="Entrez le nom du projet"
+        />
+
+        @if (name.invalid && (name.touched || name.dirty)) {
+          @if (name.errors?.['required']) {
+            <p class="text-red-600 text-sm mt-1">
+              Le nom est obligatoire.
+            </p>
+          }
+
+          @if (name.errors?.['minlength']) {
+            <p class="text-red-600 text-sm mt-1">
+              Le nom doit contenir au moins 3 caractères.
+            </p>
+          }
+        }
+      </div>
+
+      <!-- Description -->
+      <div class="mb-4">
+        <label class="block font-medium mb-2">
+          Description
+        </label>
+
+        <textarea
+          name="description"
+          [(ngModel)]="project.description"
+          required
+          minlength="10"
+          #description="ngModel"
+          class="w-full p-3 border rounded-lg"
+          placeholder="Décrivez votre projet"
+        ></textarea>
+
+        @if (description.invalid && (description.touched || description.dirty)) {
+          @if (description.errors?.['required']) {
+            <p class="text-red-600 text-sm mt-1">
+              La description est obligatoire.
+            </p>
+          }
+
+          @if (description.errors?.['minlength']) {
+            <p class="text-red-600 text-sm mt-1">
+              La description doit contenir au moins 10 caractères.
+            </p>
+          }
+        }
+      </div>
+
+      <!-- Statut -->
+      <div class="mb-4">
+        <label class="block font-medium mb-2">
+          Statut
+        </label>
+
+        <select
+          name="status"
+          [(ngModel)]="project.status"
+          required
+          #status="ngModel"
+          class="w-full p-3 border rounded-lg"
+        >
+          <option value="" disabled>Choisir un statut</option>
+
+          @for (s of statuses; track s) {
+            <option [value]="s">{{ s }}</option>
+          }
+        </select>
+
+        @if (status.invalid && (status.touched || status.dirty)) {
+          <p class="text-red-600 text-sm mt-1">
+            Le statut est obligatoire.
+          </p>
+        }
+      </div>
+
+      <!-- Date de début -->
+      <div class="mb-6">
+        <label class="block font-medium mb-2">
+          Date de début
+        </label>
+
+        <input
+          type="date"
+          name="startDate"
+          [(ngModel)]="project.startDate"
+          required
+          #startDate="ngModel"
+          class="w-full p-3 border rounded-lg"
+        />
+
+        @if (startDate.invalid && (startDate.touched || startDate.dirty)) {
+          <p class="text-red-600 text-sm mt-1">
+            La date de début est obligatoire.
+          </p>
+        }
+      </div>
+
+      <!-- Validation du groupe général -->
+      @if (general.invalid && (general.touched || general.dirty)) {
+        <p class="text-red-600 text-sm mb-4">
+          Les informations générales contiennent des erreurs.
+        </p>
+      } @else if (general.valid && (general.touched || general.dirty)) {
+        <p class="text-green-600 text-sm mb-4">
+          Les informations générales sont valides.
+        </p>
+      }
+
+    </div>
+
+    <!-- Groupe des informations financières -->
+    <div ngModelGroup="financial" #financial="ngModelGroup">
+
+      <h3 class="text-lg font-semibold mb-4 text-blue-700">
+        Informations financières
+      </h3>
+
+      <!-- Budget -->
+      <div class="mb-6">
+        <label class="block font-medium mb-2">
+          Budget
+        </label>
+
+        <input
+          type="number"
+          name="budget"
+          [(ngModel)]="project.budget"
+          required
+          min="0.01"
+          #budget="ngModel"
+          class="w-full p-3 border rounded-lg"
+          placeholder="Entrez le budget"
+        />
+
+        @if (budget.invalid && (budget.touched || budget.dirty)) {
+          @if (budget.errors?.['required']) {
+            <p class="text-red-600 text-sm mt-1">
+              Le budget est obligatoire.
+            </p>
+          }
+
+          @if (budget.errors?.['min']) {
+            <p class="text-red-600 text-sm mt-1">
+              Le budget doit être supérieur à 0.
+            </p>
+          }
+        }
+      </div>
+
+      <!-- Validation du groupe financier -->
+      @if (financial.invalid && (financial.touched || financial.dirty)) {
+        <p class="text-red-600 text-sm mb-4">
+          Les informations financières contiennent des erreurs.
+        </p>
+      } @else if (financial.valid && (financial.touched || financial.dirty)) {
+        <p class="text-green-600 text-sm mb-4">
+          Les informations financières sont valides.
+        </p>
+      }
+
+    </div>
+
+    <!-- Boutons -->
+    <div class="flex gap-3">
+
+      <button
+        type="button"
+        (click)="resetForm(projectForm)"
+        class="w-1/2 bg-gray-500 text-white p-3 rounded-lg hover:bg-gray-600"
+      >
+        Réinitialiser
+      </button>
+
+      <button
+        type="submit"
+        [disabled]="projectForm.invalid"
+        class="w-1/2 bg-blue-600 text-white p-3 rounded-lg hover:bg-blue-700 disabled:bg-gray-400"
+      >
+        {{ projectToEdit() ? 'Modifier le projet' : 'Ajouter le projet' }}
+      </button>
+
+    </div>
+
+  </form>
+
+</div>

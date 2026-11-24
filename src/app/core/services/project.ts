@@ -20,6 +20,26 @@ export class ProjectService {
   constructor(private http: HttpClient) {
     console.log('ProjectService créé, ID =', this.id);
   }
+  
+  // Ajouter un projet dans JSON Server
+  addProject(project: Project): Observable<Project> {
+    return this.http.post<Project>(
+      'http://localhost:3000/projects',
+      project
+    ).pipe(
+      tap(newProject => {
+        this.projects.update(projects => [
+          ...projects,
+          newProject
+        ]);
+      }),
+      catchError(err => {
+        this.error.set('Erreur lors de l’ajout du projet.');
+        console.error('Erreur lors de l’ajout :', err);
+        throw err;
+      })
+    );
+  }
 
   getProjects(): Observable<Project[]> {
     this.isLoading.set(true);
@@ -50,4 +70,28 @@ export class ProjectService {
     }
   });
 }
+
+// Modifier un projet dans JSON Server
+updateProject(project: Project): Observable<Project> {
+  return this.http.put<Project>(
+    `http://localhost:3000/projects/${project.id}`,
+    project
+  ).pipe(
+    tap(updatedProject => {
+      this.projects.update(projects =>
+        projects.map(p =>
+          String(p.id) === String(updatedProject.id)
+            ? updatedProject
+            : p
+        )
+      );
+    }),
+    catchError(err => {
+      this.error.set('Erreur lors de la modification du projet.');
+      console.error('Erreur lors de la modification :', err);
+      throw err;
+    })
+  );
+}
+
 }

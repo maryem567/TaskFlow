@@ -7,6 +7,25 @@
       Mes projets
     </h1>
 
+    <!-- Bouton ajouter -->
+    <button
+      (click)="toggleProjectForm()"
+      class="bg-blue-600 text-white px-5 py-3 rounded-lg mb-6 hover:bg-blue-700"
+    >
+      {{ showProjectForm() ? 'Fermer le formulaire' : '+ Ajouter un projet' }}
+    </button>
+
+    <!-- Formulaire -->
+    @if (showProjectForm()) {
+      <div class="mb-8">
+        <app-project-form
+           [projectToEdit]="selectedProject()"
+           (projectSubmit)="onProjectSubmit($event)"
+/>
+      </div>
+    }
+
+    <!-- Recherche -->
     <input
       type="text"
       placeholder="Rechercher un projet..."
@@ -26,6 +45,7 @@
       </p>
     }
 
+    <!-- Liste des projets -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
 
       @for (project of filteredProjects(); track project.id) {
