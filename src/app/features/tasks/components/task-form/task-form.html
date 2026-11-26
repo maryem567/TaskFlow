@@ -1,0 +1,177 @@
+
+<div class="max-w-2xl mx-auto bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
+
+  <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-6">
+    {{ task() ? 'Modifier une tâche' : 'Ajouter une tâche' }}
+  </h2>
+
+  <form [formGroup]="taskForm" (ngSubmit)="onSubmit()" class="space-y-5">
+
+    <!-- Titre -->
+    <div>
+      <label class="block mb-2 font-medium text-gray-700 dark:text-gray-200">
+        Titre *
+      </label>
+
+      <input
+        type="text"
+        formControlName="title"
+        placeholder="Saisir le titre de la tâche"
+        class="w-full rounded-lg border px-4 py-2 outline-none dark:bg-gray-700 dark:text-white"
+        [class.border-red-500]="taskForm.get('title')?.invalid && taskForm.get('title')?.touched"
+        [class.border-gray-300]="!taskForm.get('title')?.invalid || !taskForm.get('title')?.touched"
+      />
+
+      @if (taskForm.get('title')?.hasError('required') && taskForm.get('title')?.touched) {
+        <p class="text-red-500 text-sm mt-1">Le titre est obligatoire.</p>
+      }
+
+      @if (taskForm.get('title')?.hasError('minlength') && taskForm.get('title')?.touched) {
+        <p class="text-red-500 text-sm mt-1">
+          Le titre doit contenir au moins 3 caractères.
+        </p>
+      }
+    </div>
+
+    <!-- Description -->
+    <div>
+      <label class="block mb-2 font-medium text-gray-700 dark:text-gray-200">
+        Description
+      </label>
+
+      <textarea
+        formControlName="description"
+        rows="3"
+        maxlength="200"
+        placeholder="Décrire la tâche..."
+        class="w-full rounded-lg border px-4 py-2 outline-none dark:bg-gray-700 dark:text-white"
+        [class.border-red-500]="taskForm.get('description')?.invalid && taskForm.get('description')?.touched"
+        [class.border-gray-300]="!taskForm.get('description')?.invalid || !taskForm.get('description')?.touched"
+      ></textarea>
+
+      @if (taskForm.get('description')?.hasError('maxlength') && taskForm.get('description')?.touched) {
+        <p class="text-red-500 text-sm mt-1">
+          La description ne doit pas dépasser 200 caractères.
+        </p>
+      }
+
+      <p class="text-gray-500 text-xs mt-1">
+        {{ taskForm.get('description')?.value?.length || 0 }}/200 caractères
+      </p>
+    </div>
+
+    <!-- Priorité -->
+    <div>
+      <label class="block mb-2 font-medium text-gray-700 dark:text-gray-200">
+        Priorité *
+      </label>
+
+      <select
+        formControlName="priority"
+        class="w-full rounded-lg border px-4 py-2 dark:bg-gray-700 dark:text-white"
+        [class.border-red-500]="taskForm.get('priority')?.invalid && taskForm.get('priority')?.touched"
+      >
+        <option value="">Choisir une priorité</option>
+
+        @for (priority of priorities; track priority) {
+          <option [value]="priority">{{ priority }}</option>
+        }
+      </select>
+
+      @if (taskForm.get('priority')?.invalid && taskForm.get('priority')?.touched) {
+        <p class="text-red-500 text-sm mt-1">La priorité est obligatoire.</p>
+      }
+    </div>
+
+    <!-- Statut -->
+    <div>
+      <label class="block mb-2 font-medium text-gray-700 dark:text-gray-200">
+        Statut *
+      </label>
+
+      <select
+        formControlName="status"
+        class="w-full rounded-lg border px-4 py-2 dark:bg-gray-700 dark:text-white"
+        [class.border-red-500]="taskForm.get('status')?.invalid && taskForm.get('status')?.touched"
+      >
+        <option value="">Choisir un statut</option>
+
+        @for (status of statuses; track status) {
+          <option [value]="status">{{ status }}</option>
+        }
+      </select>
+
+      @if (taskForm.get('status')?.invalid && taskForm.get('status')?.touched) {
+        <p class="text-red-500 text-sm mt-1">Le statut est obligatoire.</p>
+      }
+    </div>
+
+    <!-- Date d'échéance -->
+    <div>
+      <label class="block mb-2 font-medium text-gray-700 dark:text-gray-200">
+        Date d'échéance *
+      </label>
+
+      <input
+        type="date"
+        formControlName="dueDate"
+        class="w-full rounded-lg border px-4 py-2 dark:bg-gray-700 dark:text-white"
+        [class.border-red-500]="taskForm.get('dueDate')?.invalid && taskForm.get('dueDate')?.touched"
+      />
+
+      @if (taskForm.get('dueDate')?.invalid && taskForm.get('dueDate')?.touched) {
+        <p class="text-red-500 text-sm mt-1">
+          La date d'échéance est obligatoire.
+        </p>
+      }
+    </div>
+
+    <!-- Utilisateur assigné -->
+    <div>
+      <label class="block mb-2 font-medium text-gray-700 dark:text-gray-200">
+        Utilisateur assigné
+      </label>
+
+      <select
+        formControlName="assigneeId"
+        class="w-full rounded-lg border border-gray-300 px-4 py-2 dark:bg-gray-700 dark:text-white"
+      >
+        <option [ngValue]="null">Aucun utilisateur</option>
+
+        @for (user of users(); track user.id) {
+          <option [ngValue]="user.id">
+            {{ user.name }} - {{ user.role }}
+          </option>
+        }
+      </select>
+    </div>
+
+    <!-- Boutons -->
+    <div class="flex flex-wrap gap-3 pt-3">
+
+      <button
+        type="submit"
+        class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-2 rounded-lg transition"
+      >
+        {{ task() ? 'Enregistrer les modifications' : 'Ajouter la tâche' }}
+      </button>
+
+      <button
+        type="button"
+        (click)="taskForm.reset({
+          title: '',
+          description: '',
+          priority: 'Moyenne',
+          status: 'En attente',
+          dueDate: '',
+          assigneeId: null
+        })"
+        class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold px-6 py-2 rounded-lg transition dark:bg-gray-600 dark:text-white"
+      >
+        Réinitialiser
+      </button>
+
+    </div>
+
+  </form>
+</div>

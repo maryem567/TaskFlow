@@ -74,6 +74,11 @@ export class ProjectCard {
     projectId: number;
     taskId: number;
   }>();
+  taskSaved = output<{
+  projectId: number;
+  task: Task;
+  isEdit: boolean;
+}>();
 
   onTaskDelete(taskId: number): void {
     this.taskDelete.emit({
@@ -134,6 +139,16 @@ export class ProjectCard {
   toggleFavorite(): void {
     this.favoritesService.toggle(this.project().id);
   }
+  onTaskSaved(event: {
+  task: Task;
+  isEdit: boolean;
+}): void {
+  this.taskSaved.emit({
+    projectId: this.project().id,
+    task: event.task,
+    isEdit: event.isEdit
+  });
+}
 
   priorityOrder = (
     a: { key: string; value: number },

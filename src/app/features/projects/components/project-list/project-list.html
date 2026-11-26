@@ -62,12 +62,13 @@
           @for (project of filteredProjects(); track project.id) {
 
             <app-project-card
-              [project]="project"
-              (projectSelected)="onProjectSelected($event)"
-              (taskStatusChange)="onTaskStatusChange($event)"
-              (taskDelete)="onTaskDelete($event)"
-              (projectDelete)="onProjectDelete($event)"
-            />
+  [project]="project"
+  (projectSelected)="onProjectSelected($event)"
+  (taskStatusChange)="onTaskStatusChange($event)"
+  (taskDelete)="onTaskDelete($event)"
+  (projectDelete)="onProjectDelete($event)"
+  (taskSaved)="onTaskSaved($event)"
+/>
 
           }
 

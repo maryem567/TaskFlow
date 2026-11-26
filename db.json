@@ -85,6 +85,15 @@
           "assigneeId": 3,
           "dueDate": "2026-10-20",
           "description": "Vérifier la cohérence des données migrées en comparant les volumes et les contenus avec l’ancien serveur."
+        },
+        {
+          "id": 1795704692096,
+          "title": "ajouter dashbord ",
+          "description": "écrire un code pour ajouter un dashbord",
+          "priority": "Basse",
+          "status": "En attente",
+          "dueDate": "2026-11-29",
+          "assigneeId": "3"
         }
       ]
     },

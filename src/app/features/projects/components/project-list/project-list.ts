@@ -191,6 +191,49 @@ export class ProjectList {
       'Tâche supprimée avec succès !'
     );
   }
+  onTaskSaved(event: {
+  projectId: number;
+  task: Task;
+  isEdit: boolean;
+}): void {
+  const project = this.projects().find(
+    p => String(p.id) === String(event.projectId)
+  );
+
+  if (!project) {
+    this.notificationService.showError('Projet introuvable !');
+    return;
+  }
+
+  const updatedTasks = event.isEdit
+    ? project.tasks.map(task =>
+        String(task.id) === String(event.task.id)
+          ? event.task
+          : task
+      )
+    : [...project.tasks, event.task];
+
+  const updatedProject = {
+    ...project,
+    tasks: updatedTasks
+  };
+
+  this.projectService.updateProject(updatedProject).subscribe({
+    next: () => {
+      this.notificationService.showSuccess(
+        event.isEdit
+          ? 'Tâche modifiée avec succès !'
+          : 'Tâche ajoutée avec succès !'
+      );
+    },
+    error: (err) => {
+      console.error('Erreur lors de l’enregistrement de la tâche :', err);
+      this.notificationService.showError(
+        'Erreur lors de l’enregistrement de la tâche !'
+      );
+    }
+  });
+}
 
   // Supprimer un projet
 onProjectDelete(projectId: number): void {

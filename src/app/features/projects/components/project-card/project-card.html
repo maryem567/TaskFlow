@@ -165,10 +165,11 @@
 
   <!-- Liste des tâches -->
   <app-task-list
-    [tasks]="project().tasks"
-    (taskStatusChange)="onTaskStatusChange($event)"
-    (taskDelete)="onTaskDelete($event)"
-  />
+  [tasks]="project().tasks"
+  (taskStatusChange)="onTaskStatusChange($event)"
+  (taskDelete)="onTaskDelete($event)"
+  (taskSaved)="onTaskSaved($event)"
+/>
 
 </div>
 
